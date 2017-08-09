@@ -1,0 +1,63 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+
+
+entity LedYakma is
+ Port ( 
+        clk: in std_logic;
+        switch: in std_logic_vector (3 downto 0);
+        led1 : out std_logic;
+        sevseg : out std_logic_vector( 6 downto 0);
+        EN  : out std_logic_vector ( 3 downto 0) 
+        
+         );
+end LedYakma;
+
+
+architecture Behavioral of LedYakma is
+ signal sayac : integer:=0;
+signal count: integer:=0;
+begin
+
+   process(clk)
+        begin
+   if(clk'event and clk='1') then
+   count<=count+1;
+             if (sayac=0) then
+                     EN <="1110";
+                     
+                     if(count=250000) then
+                     sayac<=1;  
+                     sevseg <= not("0110111"); 
+                     count <=0;
+                     end if;
+             elsif (sayac=1) then
+                    EN <= "1101";  
+                    sevseg <= not("1001111");
+                    if(count=250000) then
+                    sayac<=2;  
+                    count <=0;
+                    end if;
+                  --  sayac<=2;
+             elsif (sayac=2) then
+                    EN <= "1011";
+                     
+                    sevseg <= not("1011011"); 
+                  if(count=250000) then
+                    sayac<=3;  
+                    count <=0;
+                   end if;
+             elsif (sayac=3) then
+                    EN <= "0111";
+                    
+                    sevseg <= not("0000110"); 
+                    if(count=250000) then
+                      sayac<=0;  
+                    count <=0;
+                    end if;
+             end if;
+   -- sayac<=sayac+1;
+    end if;
+    end process;
+end Behavioral;
